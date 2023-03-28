@@ -32,7 +32,7 @@ function operate(num1, operator, num2){
     } else if (operator == 'divide'){
         return divide(num1,num2);
     } else{
-        return "error";
+        return "Err";
     };
 };
 
@@ -59,54 +59,58 @@ for(let i=0; i<numbers.length; i++){
 //function to set up operators w/ Event listeners
 let storeVal = new Array;
 let storeOp = new Array;
+let storeTemp = new Array;
 let j =0;
 let k =0;
+let m =0;
 const operators = document.getElementsByClassName("operator");
 for(let i=0; i<operators.length;i++){
     operators[i].addEventListener('click',function(e){
         storeVal[j] = display.innerHTML;
         storeOp[k] = e.target.id;
         display.innerHTML ="";
+        if(m==0){
+            storeTemp[m]= storeVal[j];
+        } else{
+            storeTemp[m]= operate(storeTemp[m-1],storeOp[k-1],storeVal[j]);
+        };
+        console.log(storeTemp[m]);
         j++;
         k++;
+        m++;
     });
 };
 
 //function to set up equal w/ Event Listener
-
 const equal = document.getElementById("equal");
 equal.addEventListener('click',function(e){
     storeVal[j] = display.innerHTML;
-    if (storeOp[k-1] == "add"){
-       display.innerHTML = add(storeVal[j-1],storeVal[j]);
-    } else if (storeOp[k-1] == "subtract"){
-        display.innerHTML = subtract(storeVal[j-1],storeVal[j]);
-    } else if (storeOp[k-1] == "multiply"){
-        display.innerHTML = multiply(storeVal[j-1],storeVal[j]);
-    } else if (storeOp[k-1] == "divide"){
-        if (storeVal[storeVal.length-1]==0){
-            display.innerHTML = "INFINITY"
-        } else{
-            display.innerHTML = divide(storeVal[j-1],storeVal[j]);
-        }
-    } else{
-        display.innerHTML = "Err";
-    };
+    display.innerHTML = operate(storeTemp[m-1],storeOp[k-1],storeVal[j]);
+    j++;
 });
 
 //function to set up 'clear' button
 const clr = document.getElementById("clear");
 clr.addEventListener('click',function(e){
     display.innerHTML = "";
-    j=0;
     i=0;
+    j=0;
+    k=0;
+    m=0;
     storeVal = [];
     storeOp = [];
-})
+    storeTemp = [];
+});
+
+//function to add keyboard event listeners
+/*
+document.addEventListener('keydown', (event) => {
+    var name = event.key;
+});
+*/
 
 /****REMAINS TO DO
  * Scrub inputs
- * Handle more than one number/ operator (see #7 Gotcha)
  * Extra Credit? 
  * --Dont do decimal
  * --Do Keyboard Support
